@@ -6,15 +6,71 @@ import numpy as np
 import datashader as ds
 import datashader.transfer_functions as tf
 import colorcet
-from fastapi.middleware.gzip import GZipMiddleware
 
 app = FastAPI()
 
-app.add_middleware(GZipMiddleware, minimum_size=1000, compresslevel=5)
 
 @app.get("/", response_class=HTMLResponse)
 async def index():
-    return "<h1>Hello, World!</h1>"
+    return """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<base target="_top">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Pi WMS</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+	<style>
+		html, body {
+			height: 100%;
+			margin: 0;
+		}
+		.leaflet-container {
+			height: 400px;
+			width: 600px;
+			max-width: 100%;
+			max-height: 100%;
+		}
+	</style>
+</head>
+<body>
+<div id="map" style="width: 600px; height: 400px;"></div>
+<script>
+	const map = L.map('map').setView([51.505, -0.09], 13);
+	const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+		maxZoom: 19,
+		attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+	}).addTo(map);
+
+	// WMS
+	const wmsLayer = L.tileLayer.WMS("/wms?", {"layers": "foo"}).addTo(map)
+</script>
+</body>
+</html>
+"""
+
+
+@app.get("/wms")
+def wms(response_class=HTMLResponse,
+        bbox: list[int] = None,
+        service: str = "WMS",
+        request: str = "GetMap",
+        layers: str = "",
+        styles: str = "",
+        transparent: bool = False,
+        format: str = "image/png",
+        width: int = 256,
+    ):
+    """Endpoint to satisfy WMS requests"""
+    print({
+        "bbox": bbox,
+        "styles": styles,
+        "layers": layers
+    })
+    return "<p>WMS</p>"
+
 
 # Quadmesh
 def rect_data(n):
@@ -38,41 +94,3 @@ async def quadmesh(n: int = 20, c: str = "fire"):
         pil.save(path)
     return FileResponse(path)
 
-# Raster
-
-def f(x,y):
-    return np.cos((x**2 + y**2)**2)
-
-
-def sample(fn, n=50, range_=(0.0,2.4)):
-    xs = ys = np.linspace(range_[0], range_[1], n)
-    x,y = np.meshgrid(xs,ys)
-    z = fn(x,y)
-    return xr.DataArray(z, coords=[("y", ys), ("x", xs)])
-
-
-def iterpng(file_like):
-    yield from file_like
-
-
-# On server load
-print("rasterization")
-da = sample(f)
-canvas = ds.Canvas(plot_width=256, plot_height=256)
-rasters = {
-    "nearest": canvas.raster(da, interpolate="nearest"),
-    "linear": canvas.raster(da, interpolate="linear"),
-}
-
-@app.get("/image")
-async def image(c: str = "fire", interpolate: str = "nearest", encoding: str = "bytesio"):
-    print(f"image: {c} {interpolate}")
-    shader = tf.shade(rasters[interpolate], cmap=getattr(colorcet, c))
-    if encoding.lower() == "pil":
-        file_like = shader.to_pil()
-    else:
-        file_like = shader.to_bytesio()
-    print(file_like)
-    return StreamingResponse(iterpng(file_like),
-        media_type="image/png"
-    )
