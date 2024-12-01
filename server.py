@@ -28,7 +28,7 @@ async def index():
 			margin: 0;
 		}
 		.leaflet-container {
-			height: 400px;
+			height: 100svh;
 			width: 600px;
 			max-width: 100%;
 			max-height: 100%;
@@ -45,7 +45,7 @@ async def index():
     }).addTo(map);
 
 	// WMS
-    const wmsLayer = L.tileLayer.wms("/wms?", {"layers": "foo"}).addTo(map)
+    const wmsLayer = L.tileLayer.wms("/wms?", {"layers": "foo", "styles": "rainbow"}).addTo(map)
 </script>
 </body>
 </html>
@@ -64,37 +64,55 @@ def pre_render():
     pil.save(path)
 
 
+# Quadmesh
+def rect_data(n):
+    # Use realistic Mercator coordinates
+    scale = 20e6
+    max_x = scale
+    min_x = -scale
+    max_y = scale
+    min_y = -scale
+    xs = np.linspace(min_x, max_x, n)
+    ys = np.linspace(min_y, max_y, n)
+    zs = np.sin(xs * ys[:, np.newaxis] / scale)
+    da = xr.DataArray(zs, coords=[('y', ys), ('x', xs)], name='Z')
+    return da
+
+
+DATA_ARRAY = rect_data(128)
+
+
 @app.get("/wms")
 def wms(response_class=HTMLResponse,
         bbox: str = None,
         service: str = "WMS",
         request: str = "GetMap",
         layers: str = "",
-        styles: str = "",
+        styles: str = "fire",
         transparent: bool = False,
         format: str = "image/png",
         width: int = 256,
         height: int = 256,
     ):
     """Endpoint to satisfy WMS requests"""
+    global DATA_ARRAY
     if bbox is not None:
-        values = [float(b) for b in bbox.split(",")]
-        print(values)
-    print({
-        "bbox": bbox,
-        "styles": styles,
-        "layers": layers
-    })
-    return FileResponse("tile.png")
+        path = f"{bbox}.png"
+        if os.path.exists(path):
+            return FileResponse(path)
+        else:
+            x_min, y_min, x_max, y_max = [float(b) for b in bbox.split(",")]
+            canvas = ds.Canvas(plot_width=256, plot_height=256, x_range=(x_min, x_max), y_range=(y_min, y_max))
+            cmap = getattr(colorcet, styles)
+            q = tf.shade(canvas.quadmesh(DATA_ARRAY, x='x', y='y', agg=ds.mean('Z')), cmap=cmap)
+            print(q)
 
-
-# Quadmesh
-def rect_data(n):
-    xs = np.linspace(0, 3, n) ** 2
-    ys = xs
-    zs = np.sin(xs * ys[:, np.newaxis])
-    da = xr.DataArray(zs, coords=[('y', ys), ('x', xs)], name='Z')
-    return da
+            # Save PIL image
+            pil = q.to_pil()
+            pil.save(path)
+            return FileResponse(path)
+    else:
+        return FileResponse("tile.png")
 
 @app.get("/quadmesh")
 async def quadmesh(n: int = 20, c: str = "fire"):
