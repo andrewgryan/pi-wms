@@ -78,7 +78,7 @@ def wms(response_class=HTMLResponse,
     ):
     """Endpoint to satisfy WMS requests"""
     if bbox is not None:
-        values = [int(b) for b in bbox.split(",")]
+        values = [float(b) for b in bbox.split(",")]
         print(values)
     print({
         "bbox": bbox,
