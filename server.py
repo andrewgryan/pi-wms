@@ -56,7 +56,7 @@ def pre_render():
     path = "tile.png"
     canvas = ds.Canvas(plot_width=256, plot_height=256)
     cmap = getattr(colorcet, "fire")
-    q = tf.shade(canvas.quadmesh(rect_data(n),x='x', y='y', agg=ds.mean('Z')), cmap=cmap, alpha=int(0.7 * 255))
+    q = tf.shade(canvas.quadmesh(rect_data(n),x='x', y='y', agg=ds.mean('Z')), cmap=cmap, alpha=int(0.4 * 255))
     print(q)
 
     # Save PIL image
@@ -66,7 +66,7 @@ def pre_render():
 
 @app.get("/wms")
 def wms(response_class=HTMLResponse,
-        bbox: list[float] = None,
+        bbox: str = None,
         service: str = "WMS",
         request: str = "GetMap",
         layers: str = "",
@@ -77,6 +77,9 @@ def wms(response_class=HTMLResponse,
         height: int = 256,
     ):
     """Endpoint to satisfy WMS requests"""
+    if bbox is not None:
+        values = [int(b) for b in bbox.split(",")]
+        print(values)
     print({
         "bbox": bbox,
         "styles": styles,
