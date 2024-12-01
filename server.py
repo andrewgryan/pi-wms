@@ -28,7 +28,7 @@ async def index():
 			margin: 0;
 		}
 		.leaflet-container {
-			height: 100svh;
+			height: 100%;
 			width: 600px;
 			max-width: 100%;
 			max-height: 100%;
@@ -36,7 +36,7 @@ async def index():
 	</style>
 </head>
 <body>
-<div id="map" style="width: 600px; height: 400px;"></div>
+<div id="map" style="width: 600px; height: 100svh;"></div>
 <script>
     const map = L.map('map').setView([51.505, -0.09], 13);
     const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -74,12 +74,13 @@ def rect_data(n):
     min_y = -scale
     xs = np.linspace(min_x, max_x, n)
     ys = np.linspace(min_y, max_y, n)
-    zs = np.sin(xs * ys[:, np.newaxis] / scale)
+    x, y = np.meshgrid(xs, ys)
+    zs = np.sin(4 * np.pi * x / scale)
     da = xr.DataArray(zs, coords=[('y', ys), ('x', xs)], name='Z')
     return da
 
 
-DATA_ARRAY = rect_data(128)
+DATA_ARRAY = rect_data(512)
 
 
 @app.get("/wms")
@@ -104,7 +105,9 @@ def wms(response_class=HTMLResponse,
             x_min, y_min, x_max, y_max = [float(b) for b in bbox.split(",")]
             canvas = ds.Canvas(plot_width=256, plot_height=256, x_range=(x_min, x_max), y_range=(y_min, y_max))
             cmap = getattr(colorcet, styles)
-            q = tf.shade(canvas.quadmesh(DATA_ARRAY, x='x', y='y', agg=ds.mean('Z')), cmap=cmap)
+            q = tf.shade(canvas.quadmesh(DATA_ARRAY, x='x', y='y', agg=ds.mean('Z')), cmap=cmap, alpha=int(0.3*255),
+                         how="linear",
+                         span=[DATA_ARRAY.min().item(), DATA_ARRAY.max().item()])
             print(q)
 
             # Save PIL image
