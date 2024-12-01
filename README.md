@@ -1,6 +1,9 @@
-# pi-wms
+# Raspberry Pi WMS
 
 A demonstration of performing WMS tiling on a Raspberry Pi Zero 2W
+
+![17330911557838338604639678332975](https://github.com/user-attachments/assets/2fb1ff87-ad36-4722-8f74-0d1dd8ee05da)
+
 
 ## Render technology
 
