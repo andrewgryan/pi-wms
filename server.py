@@ -51,6 +51,18 @@ async def index():
 </html>
 """
 
+def pre_render():
+    n = 32
+    path = "tile.png"
+    canvas = ds.Canvas(plot_width=256, plot_height=256)
+    cmap = getattr(colorcet, "fire")
+    q = tf.shade(canvas.quadmesh(rect_data(n),x='x', y='y', agg=ds.mean('Z')), cmap=cmap)
+    print(q)
+
+    # Save PIL image
+    pil = q.to_pil()
+    pil.save(path)
+
 
 @app.get("/wms")
 def wms(response_class=HTMLResponse,
@@ -62,6 +74,7 @@ def wms(response_class=HTMLResponse,
         transparent: bool = False,
         format: str = "image/png",
         width: int = 256,
+        height: int = 256,
     ):
     """Endpoint to satisfy WMS requests"""
     print({
@@ -69,7 +82,7 @@ def wms(response_class=HTMLResponse,
         "styles": styles,
         "layers": layers
     })
-    return "<p>WMS</p>"
+    return FileResponse("tile.png")
 
 
 # Quadmesh
@@ -93,4 +106,8 @@ async def quadmesh(n: int = 20, c: str = "fire"):
         pil = q.to_pil()
         pil.save(path)
     return FileResponse(path)
+
+
+# On server load
+pre_render()
 
