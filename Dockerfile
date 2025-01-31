@@ -1,5 +1,7 @@
 FROM python:3.12
 
+RUN apt-get install libfreetype6-dev
+
 WORKDIR /usr/src/app
 
 COPY requirements.txt .
