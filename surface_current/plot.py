@@ -11,8 +11,8 @@ import numpy as np
 
 def main() -> None:
     print("Hello from plot.py!")
-    x = np.linspace(0, 1, 256)
-    y = np.linspace(0, 1, 256)
+    x = np.linspace(0, 1, 512)
+    y = np.linspace(0, 1, 512)
     X, Y = np.meshgrid(x, y)
     Z = X**2 + Y**2
     levels = np.linspace(0, 2, 20)
@@ -37,7 +37,7 @@ def main() -> None:
     plt.contour(X, Y, Z, levels, linewidths=0.1, colors="gray", zorder=2)
 
     # Vectors
-    step = 2 ** 4
+    step = 2 ** 5
     offset = step // 2
     QX = X[offset::step, offset::step]
     QY = Y[offset::step, offset::step]
