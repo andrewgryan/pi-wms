@@ -4,6 +4,7 @@
 #     "matplotlib",
 # ]
 # ///
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -23,8 +24,26 @@ def main() -> None:
     ax = plt.gca()
     ax.set_aspect("equal")
     ax.set_position([0, 0, 1, 1])
-    plt.contourf(X, Y, Z, levels)
-    plt.contour(X, Y, Z, levels, linewidths=0.1, colors="gray")
+
+    # Discrete colors related to surface current
+    bounds = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0, 1.5, 2.0]
+    cmap = (mpl.colors.ListedColormap(['red', 'green', 'blue', 'cyan', "orange", "purple", "pink", "indigo", "violet", "teal", "black"])
+            .with_extremes(under='yellow', over='magenta'))
+    norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend="both")
+
+    # Outlined contours
+    plt.contourf(X, Y, Z, levels, zorder=1, cmap=cmap, norm=norm)
+    plt.contour(X, Y, Z, levels, linewidths=0.1, colors="gray", zorder=2)
+
+    # Vectors
+    step = 2 ** 4
+    offset = step // 2
+    QX = X[offset::step, offset::step]
+    QY = Y[offset::step, offset::step]
+    U = QX**2
+    V = QY**2
+    plt.quiver(QX, QY, U, V, zorder=3)
+
     plt.axis("off")
     plt.ylim(min(y), max(y))
     plt.xlim(min(x), max(x))
