@@ -27,7 +27,8 @@ def main() -> None:
 
     # Discrete colors related to surface current
     bounds = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0, 1.5, 2.0]
-    cmap = (mpl.colors.ListedColormap(['red', 'green', 'blue', 'cyan', "orange", "purple", "pink", "indigo", "violet", "teal", "black"])
+    color_list = ['#000000', '#380000', '#560000', '#760100', '#980300', '#bb0600', '#df0d00', '#f93500', '#fe6800', '#ff9100', '#ffb402', '#ffd407', '#fff324']
+    cmap = (mpl.colors.ListedColormap(color_list)
             .with_extremes(under='yellow', over='magenta'))
     norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend="both")
 
