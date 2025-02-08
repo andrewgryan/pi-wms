@@ -4,6 +4,7 @@
 #     "matplotlib",
 # ]
 # ///
+import io
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
@@ -11,6 +12,9 @@ import numpy as np
 
 def main() -> None:
     print("Hello from plot.py!")
+
+
+def plot():
     x = np.linspace(0, 1, 512)
     y = np.linspace(0, 1, 512)
     X, Y = np.meshgrid(x, y)
@@ -48,7 +52,10 @@ def main() -> None:
     plt.axis("off")
     plt.ylim(min(y), max(y))
     plt.xlim(min(x), max(x))
-    plt.savefig("image.png", pad_inches=0, dpi=dpi)
+    buf = io.BytesIO()
+    plt.savefig(buf, format="png", pad_inches=0, dpi=dpi)
+    plt.close()
+    return buf
 
 
 if __name__ == "__main__":

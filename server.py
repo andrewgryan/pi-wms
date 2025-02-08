@@ -1,11 +1,24 @@
+# /// script
+# requires-python = ">=3.12"
+# dependencies = [
+#     "datashader",
+#     "fastapi",
+#     "pillow",
+#     "xarray",
+# ]
+# ///
 import os
-from fastapi import FastAPI
+from fastapi import FastAPI, Response, BackgroundTasks
 from fastapi.responses import HTMLResponse, StreamingResponse, FileResponse
 import xarray as xr
 import numpy as np
 import datashader as ds
 import datashader.transfer_functions as tf
 import colorcet
+import matplotlib
+matplotlib.use('AGG')
+from surface_current.plot import plot
+
 
 app = FastAPI()
 
@@ -29,14 +42,14 @@ async def index():
 		}
 		.leaflet-container {
 			height: 100%;
-			width: 600px;
+			width: 100%;
 			max-width: 100%;
 			max-height: 100%;
 		}
 	</style>
 </head>
 <body>
-<div id="map" style="width: 600px; height: 100svh;"></div>
+<div id="map" style="width: 100vw; height: 100svh;"></div>
 <script>
     const map = L.map('map').setView([51.505, -0.09], 13);
     const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -45,7 +58,7 @@ async def index():
     }).addTo(map);
 
 	// WMS
-    const wmsLayer = L.tileLayer.wms("/wms?", {"layers": "foo", "styles": "rainbow"}).addTo(map)
+    const wmsLayer = L.tileLayer.wms("/wms?", {"layers": "foo", "styles": "rainbow", tileSize: 512}).addTo(map)
 </script>
 </body>
 </html>
@@ -84,7 +97,8 @@ DATA_ARRAY = rect_data(512)
 
 
 @app.get("/wms")
-def wms(response_class=HTMLResponse,
+async def wms(background_tasks: BackgroundTasks,
+        response_class=HTMLResponse,
         bbox: str = None,
         service: str = "WMS",
         request: str = "GetMap",
@@ -97,8 +111,15 @@ def wms(response_class=HTMLResponse,
     ):
     """Endpoint to satisfy WMS requests"""
     global DATA_ARRAY
+
+    buf = plot()
+    contents = buf.getvalue()
+    background_tasks.add_task(buf.close)
+    headers = {'Content-Disposition': 'inline; filename="out.png"'}
+    return Response(contents, headers=headers, media_type='image/png')
+
     if bbox is not None:
-        path = f"{bbox}.png"
+        path = f"pi_{bbox}.png"
         if os.path.exists(path):
             return FileResponse(path)
         else:

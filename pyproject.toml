@@ -1,0 +1,13 @@
+[project]
+name = "pi-wms"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "datashader>=0.17.0",
+    "fastapi[standard]>=0.115.8",
+    "matplotlib>=3.10.0",
+    "pillow>=11.1.0",
+    "xarray>=2025.1.2",
+]
