@@ -8,7 +8,9 @@
 # ]
 # ///
 import os
-from fastapi import FastAPI, Response, BackgroundTasks
+import io
+from contextlib import asynccontextmanager
+from fastapi import FastAPI, Response, BackgroundTasks, Depends
 from fastapi.responses import HTMLResponse, StreamingResponse, FileResponse
 import xarray as xr
 import numpy as np
@@ -17,10 +19,19 @@ import datashader.transfer_functions as tf
 import colorcet
 import matplotlib
 matplotlib.use('AGG')
-from surface_current.plot import plot
+from surface_current.plot import plot, save
+
+FIGURE = None
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Initialise plot
+    global FIGURE
+    FIGURE = plot()
+    yield
 
 
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -110,11 +121,13 @@ async def wms(background_tasks: BackgroundTasks,
         height: int = 256,
     ):
     """Endpoint to satisfy WMS requests"""
+    global FIGURE
     global DATA_ARRAY
 
-    buf = plot()
+    buf = io.BytesIO()
+    FIGURE.canvas.print_png(buf)
     contents = buf.getvalue()
-    background_tasks.add_task(buf.close)
+    # background_tasks.add_task(buf.close)
     headers = {'Content-Disposition': 'inline; filename="out.png"'}
     return Response(contents, headers=headers, media_type='image/png')
 
@@ -151,8 +164,4 @@ async def quadmesh(n: int = 20, c: str = "fire"):
         pil = q.to_pil()
         pil.save(path)
     return FileResponse(path)
-
-
-# On server load
-pre_render()
 

@@ -52,9 +52,13 @@ def plot():
     plt.axis("off")
     plt.ylim(min(y), max(y))
     plt.xlim(min(x), max(x))
+    return fig
+
+
+def save(dpi=512):
     buf = io.BytesIO()
     plt.savefig(buf, format="png", pad_inches=0, dpi=dpi)
-    plt.close()
+    # plt.close()
     return buf
 
 
