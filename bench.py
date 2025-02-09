@@ -4,6 +4,8 @@
 #     "matplotlib",
 # ]
 # ///
+import multiprocessing
+import time
 import matplotlib
 matplotlib.use("AGG")
 import matplotlib.pyplot as plt
@@ -12,6 +14,22 @@ import numpy as np
 
 def main() -> None:
     print("Hello from bench.py!")
+    start = time.time()
+    params = [
+        (0, 250),
+        (250, 250),
+        (500, 250),
+        (750, 250),
+    ]
+    pool = multiprocessing.Pool()
+    pool.map(single_core, params)
+    end = time.time()
+    print(f"Elapsed: {end - start}")
+    print("Goodbye from bench.py!")
+
+
+def single_core(args):
+    start, N = args
     tile_size = 256
 
     # Figure and Axes setup
@@ -31,15 +49,13 @@ def main() -> None:
     X, Y = np.meshgrid(np.linspace(0, 1, tile_size), np.linspace(0, 1, tile_size))
 
     # Rapidly plot images on same canvas
-    N = 1000
     contours = None
     filled_contours = None
     quivers = None
-    for i in range(N):
+    for i in range(start, start + N):
         U = np.random.rand() * X
         V = Y
         Z = np.sqrt(U**2 + V**2)
-        print(i)
         fig.canvas.restore_region(region)
 
         # Filled contours
