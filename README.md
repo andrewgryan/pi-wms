@@ -52,13 +52,14 @@ nerdctl run -d --cpus 1 --memory 250mb -t server:latest --name wms
 
 A matplotlib contour script `bench.py` was optimized to draw contours.
 
-N images | N cores | Artists | Elapsed(s)
--- | -- | -- | --
-500  | 1 | Contours | 15
-1000 | 1 | Contours | 31
-1000 | 1 | Filled | 32
-1000 | 1 | Contours and Filled | 52
-1000 | 1 | Filled then Contour | 35
-1000 | 1 | Filled then Contour w/zorder | 52
-1000 | 1 | Filled, Contour and Quiver | 55
-1000 | 4 | Filled, Contour and Quiver | 15
+N images | Tile size | N cores | Artists | Elapsed(s)
+-- | -- |-- | -- | --
+500  | 256 | 1 | Contours | 15
+1000 | 256 | 1 | Contours | 31
+1000 | 256 | 1 | Filled | 32
+1000 | 256 | 1 | Contours and Filled | 52
+1000 | 256 | 1 | Filled then Contour | 35
+1000 | 256 | 1 | Filled then Contour w/zorder | 52
+1000 | 256 | 1 | Filled, Contour and Quiver | 55
+1000 | 256 | 4 | Filled, Contour and Quiver | 15
+1000 | 512 | 4 | Filled, Contour and Quiver | 48

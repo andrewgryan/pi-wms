@@ -30,7 +30,7 @@ def main() -> None:
 
 def single_core(args):
     start, N = args
-    tile_size = 256
+    tile_size = 512
 
     # Figure and Axes setup
     fig, ax = plt.subplots()
@@ -69,7 +69,7 @@ def single_core(args):
         contours = ax.contour(X, Y, Z, linewidths=0.1, colors="gray", zorder=2)
 
         # Quivers every 2**N grid points
-        step = 2 ** 4
+        step = 2 ** 5
         if quivers:
             quivers.remove()
         quivers = ax.quiver(X[::step, ::step], Y[::step, ::step], U[::step, ::step], V[::step, ::step], zorder=3)
