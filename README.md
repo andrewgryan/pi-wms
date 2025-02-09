@@ -47,3 +47,11 @@ nerdctl build -t server:latest .
 # Run the image
 nerdctl run -d --cpus 1 --memory 250mb -t server:latest --name wms
 ```
+
+# Benchmark imagery
+
+A matplotlib contour script `bench.py` was optimized to draw contours.
+
+N | Elapsed(s)
+500 | 15
+1000 | 31
