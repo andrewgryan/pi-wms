@@ -22,7 +22,7 @@ def main() -> None:
         (750, 250),
     ]
     pool = multiprocessing.Pool()
-    pool.map(single_core_using_draw, params)
+    pool.map(single_core_using_blit, params)
     end = time.time()
     print(f"Elapsed: {end - start}")
     print("Goodbye from bench.py!")
