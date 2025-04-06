@@ -13,6 +13,17 @@ import numpy as np
 
 EARTH_RADIUS = 6378137.0
 
+
+def to_y(phi: float):
+    phi_radians = (phi / 180.) * np.pi
+    return EARTH_RADIUS * np.log(np.tan((np.pi / 4) + (phi_radians / 2)))
+
+
+def to_x(lam: float):
+    lam_radians = (lam / 180.) * np.pi
+    return EARTH_RADIUS * lam_radians
+
+
 BBox = namedtuple("BBox", ("x_min", "y_min", "x_max", "y_max"))
 
 
@@ -48,7 +59,7 @@ def main() -> None:
     ax.hlines(0, text_bbox.x_max, bbox.x_max, linewidth=linewidths)
 
     for lat in [-80, -60, -40, -20, 20, 40, 60, 80]:
-        y = EARTH_RADIUS * np.pi * np.sin(np.pi * lat / 180)
+        y = to_y(lat)
         text = ax.text(0, lat, f"{lat}", fontsize=fontsize, va="center", ha="center", color="#333", transform=ccrs.PlateCarree())
         extent = text.get_transform().inverted().transform(text.get_window_extent())
         text_bbox = BBox(x_min=extent[0, 0], y_min=extent[0, 1], x_max=extent[1, 0], y_max=extent[1, 1])
