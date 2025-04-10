@@ -1,3 +1,31 @@
 body {
   font-family: system-ui;
 }
+
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-group(root) {
+  animation-duration: 2s;
+}
+
+::view-transition-new(root) {
+  animation-name: scale-in;
+}
+
+::view-transition-old(root) {
+  animation-name: scale-out;
+}
+
+@keyframes scale-in {
+  from {
+    scale: 0;
+  }
+}
+
+@keyframes scale-out {
+  to {
+    scale: 0;
+  }
+}
