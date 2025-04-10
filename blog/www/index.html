@@ -6,12 +6,17 @@
 		<link rel="stylesheet" href="/static/style.css" type="text/css">
 	</head>
 	<body>
-		<h1>Hello, World!</h1>
+		<h1>Hello, {{ name }}!</h1>
 		<p>A really long line that will one day bleed off the page, starts
 		with a self-fulfilling prophesy and ends with a meandering
 		ramble about touch typing and why touch typing is suposedly
 		faster than hunt and peck typing even though I have yet to
 		master touch typing my fingers are slowly getting used to the
 		idea.</p>
+		<form action="/signin" method="post">
+			<label for="name">Name</label><br>
+			<input type="text" id="name" name="name"><br>
+			<input type="submit" value="Submit">
+		</form>
 	</body>
 </html>
