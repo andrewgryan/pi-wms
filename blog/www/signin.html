@@ -1,21 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<title>Blog</title>
-		<meta name="viewport" content="width=device-with,initial-scale=1" />
-		<link rel="stylesheet" href="/static/style.css" type="text/css">
-	</head>
-	<body>
-		<nav>
-			<a href="/">Home</a>
-			<a href="/about">About</a>
-			<a href="/signin">Sign in</a>
-		</nav>
+{% extends "base.html" %}
+{% block content %}
 		<h1>Sign in</h1>
 		<form action="/signin" method="post">
 			<label for="name">Name</label><br>
 			<input type="text" id="name" name="name"><br>
 			<input type="submit" value="Submit">
 		</form>
-	</body>
-</html>
+{% endblock %}

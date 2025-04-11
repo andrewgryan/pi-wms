@@ -41,3 +41,8 @@ async def signin(name: Annotated[str, Form()]):
         "Location": "/"
     }
     return Response(status_code=303, headers=headers, content="")
+
+
+@app.get("/notebook")
+async def notebook(request: Request):
+    return templates.TemplateResponse(request=request, name="notebook.html", context={})

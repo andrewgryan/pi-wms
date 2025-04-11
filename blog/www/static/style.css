@@ -33,3 +33,11 @@ body {
 nav {
   view-transition-name: nav;
 }
+
+.w-full {
+   inline-size: 100%;
+}
+
+.h-1/3 {
+   inline-size: 33%;
+}

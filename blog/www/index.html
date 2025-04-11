@@ -1,16 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<title>Blog</title>
-		<meta name="viewport" content="width=device-with,initial-scale=1" />
-		<link rel="stylesheet" href="/static/style.css" type="text/css">
-	</head>
-	<body>
-		<nav>
-			<a href="/">Home</a>
-			<a href="/about">About</a>
-			<a href="/signin">Sign in</a>
-		</nav>
+{% extends "base.html" %}
+{% block content %}
 		<h1>Hello, {{ name }}!</h1>
 		<p>A really long line that will one day bleed off the page, starts
 		with a self-fulfilling prophesy and ends with a meandering
@@ -18,5 +7,4 @@
 		faster than hunt and peck typing even though I have yet to
 		master touch typing my fingers are slowly getting used to the
 		idea.</p>
-	</body>
-</html>
+{% endblock %}
