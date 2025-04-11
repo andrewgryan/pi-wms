@@ -26,6 +26,11 @@ async def about(request: Request):
     return FileResponse("./www/about.html")
 
 
+@app.get("/signin", response_class=HTMLResponse)
+async def index(request: Request):
+    return templates.TemplateResponse(request=request, name="signin.html", context={})
+
+
 @app.post("/signin")
 async def signin(name: Annotated[str, Form()]):
     name = name.strip()
