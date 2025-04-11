@@ -1,3 +1,4 @@
+import uuid
 from typing import Annotated
 from fastapi import FastAPI, Form, Request, Response
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
@@ -15,11 +16,15 @@ app.mount("/static", StaticFiles(directory="./www/static"), name="static")
 
 templates = Jinja2Templates(directory="./www")
 
+def v(context):
+    version = {"v": str(uuid.uuid1()) }
+    return {**context, **version}
+
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
     name = client.get("name", default=b"World").decode("utf-8")
-    return templates.TemplateResponse(request=request, name="index.html", context={"name": name})
+    return templates.TemplateResponse(request=request, name="index.html", context=v({"name": name}))
 
 
 @app.get("/about", response_class=HTMLResponse)
@@ -29,7 +34,7 @@ async def about(request: Request):
 
 @app.get("/signin", response_class=HTMLResponse)
 async def index(request: Request):
-    return templates.TemplateResponse(request=request, name="signin.html", context={})
+    return templates.TemplateResponse(request=request, name="signin.html", context=v({}))
 
 
 @app.post("/signin")
@@ -46,7 +51,7 @@ async def signin(name: Annotated[str, Form()]):
 
 @app.get("/notebook")
 async def notebook(request: Request):
-    context = {}
+    context = v({})
     code = client.get("code")
     if code:
         code = code.decode("utf-8")

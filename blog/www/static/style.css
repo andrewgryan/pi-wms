@@ -1,11 +1,63 @@
+/* Reset */
 *, *::before, *::after {
 	box-sizing: border-box;
 }
 
-body {
-  font-family: system-ui;
+* {
+  margin: 0;
 }
 
+button, input, textarea, select {
+  font: inherit;
+}
+
+body {
+  font-family: system-ui;
+  line-height: 1.5;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+/* Props */
+:root {
+   --surface: oklch(0.25 0.1895 210 / 96.38%);
+   --text: oklch(from var(--surface) 0.95 c calc(h - 40));
+   --size-3: 1rem;
+}
+
+body {
+  color: var(--text);
+  background-color: var(--surface);
+}
+
+textarea {
+  color: inherit;
+  background-color: oklch(from var(--surface) calc(l / 1.5) c h);
+  border: none;
+  border-inline-start: 5px solid var(--text);
+  padding-inline-start: var(--size-3);
+}
+
+.result {
+  --surface-1: var(--text);
+  --surface-2: oklch(from var(--surface) calc(l / 1.5) c h);
+  background-color: var(--surface-2);
+  color: var(--surface-1);
+  border: none;
+  border-block-start: 5px solid var(--surface-1);
+  padding-inline-start: var(--size-3);
+}
+
+input[type="submit"] {
+  color: var(--surface);
+  background-color: var(--text);
+  border: none;
+}
+
+
+/* View Transitions */
 @view-transition {
   navigation: auto;
 }
@@ -38,10 +90,19 @@ nav {
   view-transition-name: nav;
 }
 
+/* Atomic CSS */
 .w-full {
    inline-size: 100%;
 }
 
 .h-third {
    block-size: 33%;
+}
+
+.flex {
+  display: flex;
+}
+
+.gap-1 {
+  gap: var(--size-3);
 }

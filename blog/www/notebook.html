@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
-		<h1>Notebook</h1>
-		<form action="/interpreter" method="post">
-			<textarea name="code" class="w-full h-third" value="{{ code }}"></textarea>
+		<h1>Notebook!</h1>
+		<form class="flex" action="/interpreter" method="post">
+			<textarea name="code" class="w-full h-third">{{ code }}</textarea>
 			<input type="submit" value="Submit">
 		</form>
 		{% if result %}
-			<div>{{ result }}</div>
+			<div class="result">{{ result }}</div>
 		{% endif %}
 {% endblock %}
