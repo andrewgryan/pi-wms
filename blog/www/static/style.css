@@ -11,21 +11,25 @@ body {
 }
 
 ::view-transition-new(root) {
-  animation-name: scale-in;
+  animation-name: slide-in;
 }
 
 ::view-transition-old(root) {
-  animation-name: scale-out;
+  animation-name: slide-out;
 }
 
-@keyframes scale-in {
+@keyframes slide-in {
   from {
-    scale: 0;
+    translate: 100vw 0;
   }
 }
 
-@keyframes scale-out {
+@keyframes slide-out {
   to {
-    scale: 0;
+    translate: -100vw 0;
   }
+}
+
+nav {
+  view-transition-name: nav;
 }
