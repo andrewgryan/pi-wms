@@ -45,4 +45,21 @@ async def signin(name: Annotated[str, Form()]):
 
 @app.get("/notebook")
 async def notebook(request: Request):
-    return templates.TemplateResponse(request=request, name="notebook.html", context={})
+    context = {}
+    code = client.get("code")
+    if code:
+        context["code"] = code.decode("utf-8")
+        context["result"] = "Foo"
+    return templates.TemplateResponse(request=request, name="notebook.html", context=context)
+
+
+@app.post("/interpreter")
+async def interpreter(code: Annotated[str, Form()]):
+    code = code.strip()
+    client.set("code", code)
+    headers = {
+        "Content-type": "text/html;charset=UTF-8",
+        "Content-Length": "0",
+        "Location": "/notebook"
+    }
+    return Response(status_code=303, headers=headers, content="")
