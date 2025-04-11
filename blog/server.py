@@ -4,6 +4,7 @@ from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pymemcache.client import base
 from fastapi.templating import Jinja2Templates
+import language
 
 client = base.Client(("cache", 11211))
 
@@ -48,8 +49,9 @@ async def notebook(request: Request):
     context = {}
     code = client.get("code")
     if code:
-        context["code"] = code.decode("utf-8")
-        context["result"] = "Foo"
+        code = code.decode("utf-8")
+        context["code"] = code
+        context["result"] = language.interpret(code)
     return templates.TemplateResponse(request=request, name="notebook.html", context=context)
 
 

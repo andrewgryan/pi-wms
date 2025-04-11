@@ -1,2 +1,2 @@
-def interpreter(code: str) -> str:
+def interpret(code: str) -> str:
     return code
