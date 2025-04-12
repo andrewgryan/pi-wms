@@ -17,7 +17,8 @@ import language
     ("1/0", "ZeroDivisionError: division by 0"),
     ("(1 + 1)", "2"),
     ("(1 + 1) + 1", "3"),
-    ("1 + (2 * 3)", "7")
+    ("1 + (2 * 3)", "7"),
+    ("2 ++ 3", "SyntaxError: expected digit found '+'"),
 ])
 def test_interpret(code, result):
     assert language.interpret(code)["message"] == result
