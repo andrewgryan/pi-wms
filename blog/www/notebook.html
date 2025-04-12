@@ -6,6 +6,6 @@
 			<input type="submit" value="Submit">
 		</form>
 		{% if result %}
-			<div class="result">{{ result }}</div>
+		<div class="result {{ "error" if result.status == "error" else "success" }}">{{ result.message }}</div>
 		{% endif %}
 {% endblock %}

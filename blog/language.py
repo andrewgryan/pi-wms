@@ -23,8 +23,8 @@ def interpret(code: str) -> str:
         elif token in ("+", "*", "-"):
             operator = stream.read(1)
         else:
-            raise Exception(f"Unknown token: {token}")
-    return str(result)
+            return {"status": "error", "message": f"Unknown token: '{token}' at position {stream.tell()}"}
+    return {"status": "success", "message": str(result)}
 
 
 def parse_number(stream):

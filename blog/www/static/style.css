@@ -32,11 +32,13 @@ body {
   background-color: var(--surface);
 }
 
+/* Notebook */
 textarea {
   color: inherit;
   background-color: oklch(from var(--surface) calc(l / 1.5) c h);
   border: none;
   border-inline-start: 5px solid var(--text);
+  border-block-end: 5px solid var(--text);
   padding-inline-start: var(--size-3);
 }
 
@@ -44,10 +46,19 @@ textarea {
   --surface-1: var(--text);
   --surface-2: oklch(from var(--surface) calc(l / 1.5) c h);
   background-color: var(--surface-2);
-  color: var(--surface-1);
   border: none;
-  border-block-start: 5px solid var(--surface-1);
   padding-inline-start: var(--size-3);
+}
+
+.error {
+  color: red;
+  border-inline-start: 5px solid red;
+}
+
+.success {
+  --_highlight: oklch(from green 0.95 c h);
+  color: var(--_highlight);
+  border-inline-start: 5px solid var(--_highlight);
 }
 
 input[type="submit"] {
