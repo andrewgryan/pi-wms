@@ -22,8 +22,8 @@ p {
 
 /* Props */
 :root {
-   --surface: oklch(0.25 0.1895 210 / 96.38%);
-   --text: oklch(from var(--surface) 0.95 c calc(h - 40));
+   --surface: white;
+   --text: black;
    --size-3: 1rem;
 }
 
@@ -38,7 +38,6 @@ textarea {
   background-color: oklch(from var(--surface) calc(l / 1.5) c h);
   border: none;
   border-inline-start: 5px solid var(--text);
-  border-block-end: 5px solid var(--text);
   padding-inline-start: var(--size-3);
 }
 
