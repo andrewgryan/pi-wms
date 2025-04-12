@@ -1,4 +1,4 @@
-FROM python:3.12-alpine
+FROM python:3.13-alpine
 RUN apk add vim
 WORKDIR /usr/src/app
 COPY requirements.txt .

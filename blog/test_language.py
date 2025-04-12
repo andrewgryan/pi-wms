@@ -15,7 +15,9 @@ import language
     ("1*1", "1"),
     ("1/1", "1.0"),
     ("1/0", "ZeroDivisionError: division by 0"),
-    # ("1 + 2 * 3", "7"),
+    ("(1 + 1)", "2"),
+    ("(1 + 1) + 1", "3"),
+    ("1 + (2 * 3)", "7")
 ])
 def test_interpret(code, result):
     assert language.interpret(code)["message"] == result
