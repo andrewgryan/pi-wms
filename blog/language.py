@@ -9,7 +9,7 @@ def interpret(code: str) -> str:
         token = peek(stream)
         if token == '':
             break
-        elif token == ' ':
+        elif token in ' \n':
             stream.read(1)
             continue
         elif token.isdigit():
@@ -25,7 +25,7 @@ def interpret(code: str) -> str:
                     result /= number
                 except ZeroDivisionError:
                     return {"status": "error", "message": f"ZeroDivisionError: division by {number}"}
-        elif token in ("+", "*", "-", "/"):
+        elif token in "+*-/":
             operator = stream.read(1)
         else:
             return {"status": "error", "message": f"Unknown token: '{token}' at position {stream.tell()}"}
