@@ -9,19 +9,22 @@
 		<nav>
 			<ul>
 				<li>
-			<a href="/">Home</a>
+					<a href="/">Home</a>
 				</li>
 				<li>
-			<a href="/notebook">Notebook</a>
+					<a href="/notebook">Notebook</a>
 				</li>
 				<li>
-			<a href="/about">About</a>
+					<a href="/about">About</a>
 				</li>
 				<li>
-			<a href="/signin">Sign in</a>
+					<a href="/signin">Sign in</a>
 				</li>
 			</ul>
 		</nav>
-		{% block content %}{% endblock %}
+
+		<main class="container">
+			{% block content %}{% endblock %}
+		</main>
 	</body>
 </html>
