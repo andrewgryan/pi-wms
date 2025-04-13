@@ -1,3 +1,7 @@
+/* Font */
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
+
+
 /* Reset */
 *, *::before, *::after {
 	box-sizing: border-box;
@@ -22,9 +26,11 @@ p {
 
 /* Props */
 :root {
-   --surface: white;
+   --surface: #eee;
    --text: black;
+   --size-2: 0.75rem;
    --size-3: 1rem;
+   --font-heading: "Audiowide", sans-serif;
 }
 
 body {
@@ -32,21 +38,31 @@ body {
   background-color: var(--surface);
 }
 
+.container {
+	padding: var(--size-2);
+}
+
 /* Notebook */
 textarea {
   color: inherit;
-  background-color: oklch(from var(--surface) calc(l / 1.5) c h);
+  background-color: inherit;
   border: none;
   border-inline-start: 5px solid var(--text);
   padding-inline-start: var(--size-3);
+  padding-block: var(--size-3);
+}
+
+.cell {
+  background-color: oklch(from var(--surface) 0.9 c h);
 }
 
 .result {
   --surface-1: var(--text);
   --surface-2: oklch(from var(--surface) calc(l / 1.5) c h);
-  background-color: var(--surface-2);
+  background-color: white;
   border: none;
   padding-inline-start: var(--size-3);
+  padding-block: var(--size-3);
 }
 
 .error {
@@ -56,7 +72,7 @@ textarea {
 
 .success {
   --_highlight: oklch(from green 0.95 c h);
-  color: var(--_highlight);
+  color: var(--text);
   border-inline-start: 5px solid var(--_highlight);
 }
 
@@ -72,17 +88,30 @@ input[type="submit"] {
   navigation: auto;
 }
 
-::view-transition-group(root) {
+::view-transition-group(result) {
   /* animation-duration: 2s; */
 }
 
-::view-transition-new(root) {
-  animation-name: slide-in;
+::view-transition-new(result) {
+  animation-name: fade-in;
 }
 
-::view-transition-old(root) {
-  animation-name: slide-out;
+::view-transition-old(result) {
+  animation-name: fade-out;
 }
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
 
 @keyframes slide-in {
   from {
@@ -100,6 +129,10 @@ nav {
   view-transition-name: nav;
 }
 
+.result {
+  view-transition-name: result;
+}
+
 /* Atomic CSS */
 .w-full {
    inline-size: 100%;
@@ -115,4 +148,29 @@ nav {
 
 .gap-1 {
   gap: var(--size-3);
+}
+
+
+/* Navigation */
+nav {
+	& ul {
+		padding: 0;
+		list-style-type: none;
+		display: flex;
+		& li {
+			& a {
+				display: block;
+				padding: var(--size-2);
+				text-decoration: none;
+			}
+		}
+	}
+}
+
+
+/* Heading */
+h1 {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-style: normal;
 }

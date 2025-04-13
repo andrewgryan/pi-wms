@@ -29,7 +29,7 @@ async def index(request: Request):
 
 @app.get("/about", response_class=HTMLResponse)
 async def about(request: Request):
-    return FileResponse("./www/about.html")
+    return templates.TemplateResponse(request=request, name="about.html", context=v({}))
 
 
 @app.get("/signin", response_class=HTMLResponse)
